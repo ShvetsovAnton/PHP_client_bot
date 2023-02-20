@@ -27,7 +27,7 @@ load_dotenv()
 telegram_client_token = os.getenv('TELEGRAM_CLIENT_TOKEN')
 telegram_executor_token = os.getenv('TELEGRAM_EXECUTOR_TOKEN')
 storage = MemoryStorage()
-bot2 =Bot(token=telegram_executor_token)
+bot2 = Bot(token=telegram_executor_token)
 bot = Bot(token=telegram_client_token)
 dp = Dispatcher(bot, bot2, storage=storage)
 
