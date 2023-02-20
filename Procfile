@@ -1,0 +1,1 @@
+worker: pyton clients_bot.py
