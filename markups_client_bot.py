@@ -8,7 +8,7 @@ from aiogram.types import (
 # -- Payment menu --
 payment_button = InlineKeyboardButton(
     '💰Оплатить подписку',
-    url='https://stripe.com/docs/api'
+    url='httpss://stripe.com/docs/api'
 )
 payment_menu = InlineKeyboardMarkup().add(payment_button)
 
@@ -19,7 +19,7 @@ order_button = InlineKeyboardButton(
 )
 contactus_button = InlineKeyboardButton(
     '💬Связать с нами',
-    url='https://t.me/shvetsovdb_passwordm'
+    url='https://t.me/shvetsovantonm'
 )
 main_menu = InlineKeyboardMarkup().add(
     order_button,
@@ -39,7 +39,7 @@ secret_menu = InlineKeyboardMarkup().add(
 
 contactus_button = KeyboardButton(
     '💬Связать с нами',
-    url='https://t.me/shvetsovdb_passwordm')
+    url='https://t.me/shvetsovantonm')
 contactus_menu = InlineKeyboardMarkup().add(contactus_button)
 
 # -- Answer to executor --

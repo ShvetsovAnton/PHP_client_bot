@@ -11,7 +11,7 @@ db_password = os.getenv('DP_PASSWORD')
 
 def verification_access(message):
     tg_username = message['from']['username']
-    url = 'http://bombard.tech/client/'
+    url = 'https://bombard.tech/client/'
     params = {'username': tg_username}
     response = requests.get(
         url,
@@ -30,10 +30,10 @@ def make_new_order(new_order, order_description):
     tg_user_id = order_description['tg_user_id']
     dp_user_id = order_description['dp_user_id']
     order_text = new_order['text']
-    url = 'http://bombard.tech/orders/'
+    url = 'https://bombard.tech/orders/'
     params = {
         "client_tg_id": tg_user_id,
-        "client": f"http://bombard.tech/clients/{dp_user_id}/",
+        "client": f"https://bombard.tech/clients/{dp_user_id}/",
         "text": order_text
     }
     response = requests.post(url, data=params, auth=(db_username, db_password))
@@ -44,7 +44,7 @@ def make_new_order(new_order, order_description):
 def send_secretkey(order, order_description):
 
     order_id = order_description['order_id']
-    url = f'http://bombard.tech/orders/{order_id}/'
+    url = f'https://bombard.tech/orders/{order_id}/'
     params = {'credentials': 'bla'}
     response = requests.patch(
         url,

@@ -1,8 +1,7 @@
 import os
+
+import requests
 from dotenv import load_dotenv
-
-
-import logging
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters import Text
@@ -13,9 +12,9 @@ from aiogram import (Bot,
                      types)
 
 from utils import OrderStateGroup
-from main import (verification_access,
-                  make_new_order,
-                  send_secretkey)
+from quires_tools import (verification_access,
+                          make_new_order,
+                          send_secretkey)
 
 from markups_client_bot import (main_menu,
                                 payment_menu,
@@ -26,9 +25,11 @@ from markups_client_bot import (main_menu,
 
 load_dotenv()
 telegram_client_token = os.getenv('TELEGRAM_CLIENT_TOKEN')
-bot = Bot(token=telegram_client_token)
+telegram_executor_token = os.getenv('TELEGRAM_EXECUTOR_TOKEN')
 storage = MemoryStorage()
-dp = Dispatcher(bot, storage=storage)
+bot2 =Bot(token=telegram_executor_token)
+bot = Bot(token=telegram_client_token)
+dp = Dispatcher(bot, bot2, storage=storage)
 
 
 @dp.message_handler(commands=['start'])
@@ -46,7 +47,7 @@ async def verification_user(message: types.Message) -> None:
             '"📑Оформить новый заказ"',
             reply_markup=main_menu
         )
-    except TypeError:
+    except (TypeError, requests.HTTPError):
         await message.answer(
             f'Приветствую, {message.from_user.first_name}\n\n'
             '🚧 Данный бот 🤖 работает, как подписочный сервис,'
@@ -105,8 +106,8 @@ async def wait_order(message: types.Message):
 async def take_order(message: types.Message, state: FSMContext):
     async with state.proxy() as order:
         order["secret"] = message.text
-        print(order)
         send_secretkey(order, order_description)
+        await state.finish()
     await message.answer(
         "Ваш заказ принят!✅\n\n"
         "<i>\nЕсли у исполнителя возникнут "
@@ -126,10 +127,9 @@ async def comment_to_client(message: types.Message):
 
 @dp.message_handler(content_types=['text'], state=OrderStateGroup.comment_to)
 async def worker_comment(message: types.Message, state: FSMContext):
-    logging.warning('worker_comment func!')
     async with state.proxy():
         client_tg_id = "406682076"
-        await bot.send_message(
+        await bot2.send_message(
             client_tg_id,
             'Здравствуйте, наш специалист собирается взяться за вашу заявку, '
             'но у него возникли вопросы.\n\n'
@@ -163,5 +163,4 @@ async def answer_callback(callback: types.CallbackQuery):
 
 if __name__ == '__main__':
     order_description = {}
-    logging.basicConfig(level=logging.INFO)
     executor.start_polling(dp, skip_updates=True)
